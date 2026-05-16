@@ -1,0 +1,162 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Font variable */
+:root {
+  --font-sans: 'Outfit', 'Plus Jakarta Sans', sans-serif;
+  --font-display: 'Outfit', 'Plus Jakarta Sans', sans-serif;
+  --font-mono: 'Space Mono', monospace;
+}
+
+@layer base {
+  :root {
+    /* Couch Quest dark cozy palette */
+    --background: 265 25% 8%;        /* #15121A deep dark purple */
+    --foreground: 270 40% 96%;       /* #F6F0FF soft lavender white */
+    --card: 265 28% 16%;             /* #2D2440 card surface */
+    --card-foreground: 270 40% 96%;
+    --popover: 265 28% 13%;
+    --popover-foreground: 270 40% 96%;
+    --primary: 96 63% 64%;           /* #8BE35B neon green */
+    --primary-foreground: 265 25% 8%;
+    --secondary: 280 75% 70%;        /* #B46CFF purple */
+    --secondary-foreground: 270 40% 96%;
+    --muted: 265 20% 22%;
+    --muted-foreground: 270 20% 66%; /* #B8ADC8 */
+    --accent: 38 100% 64%;           /* #FFB84D neon orange */
+    --accent-foreground: 265 25% 8%;
+    --destructive: 350 80% 60%;      /* #FF5C7A danger red */
+    --destructive-foreground: 270 40% 96%;
+    --border: 265 22% 24%;
+    --input: 265 22% 24%;
+    --ring: 96 63% 64%;
+    --radius: 0.75rem;
+
+    /* Chart colors */
+    --chart-1: 96 63% 64%;
+    --chart-2: 280 75% 70%;
+    --chart-3: 38 100% 64%;
+    --chart-4: 350 80% 60%;
+    --chart-5: 188 63% 60%;
+
+    /* Custom game tokens */
+    --color-bg: hsl(265, 25%, 8%);
+    --color-surface: hsl(265, 25%, 11%);
+    --color-card: hsl(265, 28%, 16%);
+    --color-card-elevated: hsl(265, 28%, 20%);
+    --color-primary: hsl(96, 63%, 64%);
+    --color-secondary: hsl(280, 75%, 70%);
+    --color-accent: hsl(38, 100%, 64%);
+    --color-danger: hsl(350, 80%, 60%);
+    --color-text: hsl(270, 40%, 96%);
+    --color-muted: hsl(270, 20%, 66%);
+    --color-border: hsl(265, 22%, 24%);
+  }
+
+  * {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+  }
+
+  html {
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    text-rendering: optimizeLegibility;
+    scroll-behavior: smooth;
+  }
+
+  body {
+    min-height: 100dvh;
+    background-color: var(--color-bg);
+    color: var(--color-text);
+    font-family: var(--font-sans, sans-serif);
+    overflow-x: hidden;
+  }
+}
+
+/* Pixel-art inspired scanline overlay */
+.pixel-bg {
+  background-image: radial-gradient(
+    circle at 50% 50%,
+    hsl(265, 40%, 14%) 0%,
+    hsl(265, 25%, 8%) 70%
+  );
+  position: relative;
+}
+
+/* Smoke/cloud animation */
+@keyframes float-up {
+  0% { transform: translateY(0) scale(1); opacity: 0.15; }
+  50% { transform: translateY(-20px) scale(1.08); opacity: 0.08; }
+  100% { transform: translateY(-40px) scale(1.15); opacity: 0; }
+}
+
+.smoke-particle {
+  animation: float-up 4s ease-in-out infinite;
+  border-radius: 50%;
+  position: absolute;
+  pointer-events: none;
+}
+
+/* Card flip animation */
+@keyframes card-appear {
+  0% { transform: translateY(24px) scale(0.96); opacity: 0; }
+  100% { transform: translateY(0) scale(1); opacity: 1; }
+}
+
+.card-appear {
+  animation: card-appear 0.35s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+/* Vibe token pop */
+@keyframes vibe-pop {
+  0% { transform: scale(1); }
+  50% { transform: scale(1.4); }
+  100% { transform: scale(1); }
+}
+.vibe-pop {
+  animation: vibe-pop 0.3s ease-in-out;
+}
+
+/* Glow effects */
+.glow-primary {
+  box-shadow: 0 0 20px hsl(96 63% 64% / 0.3);
+}
+.glow-secondary {
+  box-shadow: 0 0 20px hsl(280 75% 70% / 0.3);
+}
+.glow-accent {
+  box-shadow: 0 0 20px hsl(38 100% 64% / 0.3);
+}
+
+/* Pixel border style */
+.pixel-border {
+  border: 2px solid var(--color-border);
+  border-radius: 12px;
+}
+
+/* Neon text */
+.neon-text {
+  text-shadow: 0 0 10px currentColor;
+}
+
+/* Card type badge colors */
+.badge-sidequest { background: hsl(280, 75%, 70%); color: hsl(265, 25%, 8%); }
+.badge-debate { background: hsl(38, 100%, 64%); color: hsl(265, 25%, 8%); }
+.badge-vote { background: hsl(188, 63%, 60%); color: hsl(265, 25%, 8%); }
+.badge-character { background: hsl(96, 63%, 64%); color: hsl(265, 25%, 8%); }
+.badge-ritual { background: hsl(350, 80%, 60%); color: hsl(265, 25%, 8%); }
+.badge-rule { background: hsl(265, 40%, 60%); color: hsl(265, 25%, 8%); }
+.badge-memory { background: hsl(210, 60%, 60%); color: hsl(265, 25%, 8%); }
+.badge-creative { background: hsl(160, 60%, 55%); color: hsl(265, 25%, 8%); }
+.badge-chill_check { background: hsl(200, 70%, 60%); color: hsl(265, 25%, 8%); }
+
+/* Scrollbar */
+::-webkit-scrollbar { width: 6px; }
+::-webkit-scrollbar-track { background: var(--color-surface); }
+::-webkit-scrollbar-thumb { background: var(--color-border); border-radius: 3px; }
+
+/* Safe area for mobile */
+.safe-bottom { padding-bottom: env(safe-area-inset-bottom, 16px); }
