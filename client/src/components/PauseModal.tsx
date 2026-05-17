@@ -1,3 +1,4 @@
+import { AvatarImg } from "@/components/AvatarImg";
 import { useSession } from "@/state/sessionStore";
 import { Intensity } from "@/types/game";
 import { getCharacter } from "@/data/characters";
@@ -106,7 +107,7 @@ export default function PauseModal({ onClose, onEnd }: Props) {
               const char = getCharacter(p.characterId);
               return (
                 <div key={p.id} className="flex items-center gap-2 px-2 py-1.5 rounded-lg" style={{ background: "hsl(265,28%,20%)" }}>
-                  <span>{p.avatarEmoji}</span>
+                  <AvatarImg value={p.avatarEmoji} size={28} />
                   <div className="flex-1 min-w-0">
                     <p className="text-xs font-semibold truncate" style={{ color: "hsl(270,40%,96%)" }}>
                       {p.name || `P${i + 1}`}

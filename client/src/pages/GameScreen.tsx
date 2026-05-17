@@ -6,6 +6,7 @@ import { getCharacter } from "@/data/characters";
 import { Card, Player } from "@/types/game";
 import { apiRequest } from "@/lib/queryClient";
 import PauseModal from "@/components/PauseModal";
+import { AvatarImg } from "@/components/AvatarImg";
 import VibeTokenModal from "@/components/VibeTokenModal";
 
 const CARD_TYPE_ICONS: Record<string, string> = {
@@ -182,7 +183,7 @@ export default function GameScreen() {
         {/* Current player */}
         {currentPlayer && (
           <div className="flex items-center gap-2">
-            <span className="text-2xl">{currentPlayer.avatarEmoji}</span>
+            <AvatarImg value={currentPlayer.avatarEmoji} size={36} />
             <div>
               <p className="font-bold text-sm" style={{ color: "hsl(270,40%,96%)" }}>
                 {currentPlayer.name || `Player ${session.currentPlayerIndex + 1}`}'s turn
@@ -297,7 +298,7 @@ export default function GameScreen() {
                 className="flex flex-col items-center gap-0.5 flex-shrink-0"
                 style={{ opacity: i === session.currentPlayerIndex ? 1 : 0.5 }}
               >
-                <span className="text-lg">{p.avatarEmoji}</span>
+                <AvatarImg value={p.avatarEmoji} size={28} />
                 <span className="text-xs font-medium" style={{ color: i === session.currentPlayerIndex ? "hsl(96,63%,64%)" : "hsl(270,20%,66%)" }}>
                   {p.name || `P${i + 1}`}
                 </span>

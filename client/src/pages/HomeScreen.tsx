@@ -1,78 +1,99 @@
 import { useLocation } from "wouter";
 import { useSession } from "@/state/sessionStore";
-import { apiRequest } from "@/lib/queryClient";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
-// Smoke particles component
-function SmokeParticles() {
+// Audio controller hook – auto-plays on mount (if allowed), survives re-renders
+function useAmbientAudio() {
+  const audioRef = useRef<HTMLAudioElement | null>(null);
+  const [playing, setPlaying] = useState(false);
+  const [muted, setMuted] = useState(false);
+
+  useEffect(() => {
+    const audio = new Audio("/audio/reggae-chill.mp3");
+    audio.loop = true;
+    audio.volume = 0.35;
+    audioRef.current = audio;
+
+    // Try autoplay (may be blocked by browser policy, gracefully falls back)
+    const tryPlay = () => {
+      audio.play().then(() => setPlaying(true)).catch(() => {
+        // Blocked — we'll let the user trigger it via the button
+        setPlaying(false);
+      });
+    };
+
+    tryPlay();
+
+    return () => {
+      audio.pause();
+      audio.src = "";
+    };
+  }, []);
+
+  function toggle() {
+    const audio = audioRef.current;
+    if (!audio) return;
+    if (playing) {
+      audio.pause();
+      setPlaying(false);
+    } else {
+      audio.play().then(() => setPlaying(true)).catch(() => {});
+    }
+  }
+
+  function toggleMute() {
+    const audio = audioRef.current;
+    if (!audio) return;
+    const next = !muted;
+    audio.muted = next;
+    setMuted(next);
+    // If muted and not playing, start playing muted so toggling unmute works
+    if (!playing) {
+      audio.play().then(() => setPlaying(true)).catch(() => {});
+    }
+  }
+
+  return { playing, muted, toggle, toggleMute };
+}
+
+// Floating particle dots
+function FloatingDots() {
   return (
     <div className="fixed inset-0 pointer-events-none overflow-hidden" aria-hidden>
-      {[...Array(6)].map((_, i) => (
-        <div
-          key={i}
-          className="smoke-particle bg-purple-500/10"
-          style={{
-            width: 60 + i * 20,
-            height: 60 + i * 20,
-            left: `${10 + i * 15}%`,
-            bottom: `${10 + (i % 3) * 12}%`,
-            animationDelay: `${i * 0.7}s`,
-            animationDuration: `${4 + i * 0.5}s`,
-          }}
-        />
-      ))}
+      {[...Array(14)].map((_, i) => {
+        const colors = [
+          "hsl(96,63%,64%)",
+          "hsl(280,75%,70%)",
+          "hsl(38,100%,64%)",
+          "hsl(200,80%,70%)",
+        ];
+        const size = 3 + (i % 4) * 2.5;
+        return (
+          <div
+            key={i}
+            className="absolute rounded-full smoke-particle"
+            style={{
+              width: size,
+              height: size,
+              background: colors[i % colors.length],
+              left: `${5 + i * 7}%`,
+              bottom: `${8 + (i % 5) * 14}%`,
+              opacity: 0.35 + (i % 3) * 0.12,
+              animationDelay: `${i * 0.55}s`,
+              animationDuration: `${5 + (i % 3) * 1.5}s`,
+            }}
+          />
+        );
+      })}
     </div>
   );
 }
 
-// Couch scene SVG
-function CouchScene() {
-  return (
-    <div className="w-full flex justify-center mb-4">
-      <svg
-        viewBox="0 0 280 120"
-        className="w-64 h-28"
-        aria-label="Cozy couch scene"
-        role="img"
-      >
-        {/* Floor */}
-        <rect x="0" y="100" width="280" height="20" fill="hsl(265,22%,16%)" rx="0" />
-        {/* Couch body */}
-        <rect x="30" y="64" width="220" height="40" fill="hsl(280,30%,26%)" rx="10" />
-        {/* Couch back */}
-        <rect x="30" y="40" width="220" height="28" fill="hsl(280,30%,32%)" rx="8" />
-        {/* Armrests */}
-        <rect x="24" y="52" width="22" height="52" fill="hsl(280,30%,28%)" rx="6" />
-        <rect x="234" y="52" width="22" height="52" fill="hsl(280,30%,28%)" rx="6" />
-        {/* Cushion lines */}
-        <line x1="140" y1="64" x2="140" y2="104" stroke="hsl(265,22%,22%)" strokeWidth="2" />
-        <line x1="96" y1="64" x2="96" y2="104" stroke="hsl(265,22%,22%)" strokeWidth="1.5" opacity="0.5" />
-        <line x1="184" y1="64" x2="184" y2="104" stroke="hsl(265,22%,22%)" strokeWidth="1.5" opacity="0.5" />
-        {/* Pillows */}
-        <rect x="38" y="44" width="34" height="20" fill="hsl(96,50%,50%)" rx="5" opacity="0.8" />
-        <rect x="208" y="44" width="34" height="20" fill="hsl(280,60%,60%)" rx="5" opacity="0.8" />
-        {/* Person silhouette */}
-        <ellipse cx="140" cy="58" rx="20" ry="16" fill="hsl(265,20%,35%)" />
-        <circle cx="140" cy="40" r="10" fill="hsl(265,20%,35%)" />
-        {/* Smoke wisps */}
-        <path d="M200 50 Q205 40 200 30 Q195 20 200 10" stroke="hsl(270,30%,80%)" strokeWidth="1.5" fill="none" opacity="0.3" />
-        <path d="M210 55 Q215 44 210 34 Q205 24 210 14" stroke="hsl(270,30%,80%)" strokeWidth="1" fill="none" opacity="0.2" />
-        {/* Stars */}
-        <circle cx="30" cy="15" r="1.5" fill="hsl(96,63%,64%)" />
-        <circle cx="60" cy="8" r="1" fill="hsl(280,75%,70%)" />
-        <circle cx="220" cy="12" r="1.5" fill="hsl(38,100%,64%)" />
-        <circle cx="250" cy="20" r="1" fill="hsl(96,63%,64%)" />
-        <circle cx="15" cy="30" r="1" fill="hsl(280,75%,70%)" />
-      </svg>
-    </div>
-  );
-}
-
-// Logo SVG
+// Logo SVG (unchanged)
 function CouchQuestLogo() {
   return (
     <div className="flex flex-col items-center gap-1">
-      <svg viewBox="0 0 48 48" width="48" height="48" aria-label="Couch Quest logo" role="img">
+      <svg viewBox="0 0 48 48" width="44" height="44" aria-label="Couch Quest logo" role="img">
         <rect x="4" y="18" width="40" height="22" rx="5" fill="hsl(280,30%,26%)" />
         <rect x="4" y="12" width="40" height="10" rx="4" fill="hsl(280,30%,32%)" />
         <rect x="2" y="16" width="10" height="24" rx="4" fill="hsl(280,30%,28%)" />
@@ -91,10 +112,97 @@ function CouchQuestLogo() {
   );
 }
 
+// Audio controls floating badge
+function AudioBadge({ playing, muted, onToggle, onMute }: {
+  playing: boolean;
+  muted: boolean;
+  onToggle: () => void;
+  onMute: () => void;
+}) {
+  return (
+    <div
+      className="flex items-center gap-2 px-3 py-1.5 rounded-full"
+      style={{
+        background: "hsl(265,28%,14%)",
+        border: "1px solid hsl(265,22%,26%)",
+      }}
+    >
+      {/* Animated bars when playing */}
+      <div className="flex items-end gap-0.5 h-4" aria-hidden>
+        {[0, 1, 2, 3].map((i) => (
+          <div
+            key={i}
+            className="w-1 rounded-full"
+            style={{
+              background: playing && !muted ? "hsl(96,63%,64%)" : "hsl(265,20%,40%)",
+              height: playing && !muted ? undefined : "4px",
+              animation: playing && !muted ? `audioBar ${0.6 + i * 0.15}s ease-in-out infinite alternate` : "none",
+              animationDelay: `${i * 0.1}s`,
+            }}
+          />
+        ))}
+      </div>
+
+      <span className="text-xs font-medium" style={{ color: "hsl(270,20%,66%)" }}>
+        {playing && !muted ? "Vibing" : muted ? "Muted" : "Music"}
+      </span>
+
+      <button
+        onClick={onMute}
+        title={muted ? "Unmute" : "Mute"}
+        className="text-sm transition-opacity hover:opacity-80"
+        style={{ color: muted ? "hsl(270,20%,46%)" : "hsl(270,20%,66%)" }}
+      >
+        {muted ? "🔇" : "🔉"}
+      </button>
+
+      <button
+        onClick={onToggle}
+        title={playing ? "Pause music" : "Play music"}
+        className="text-sm transition-opacity hover:opacity-80"
+        style={{ color: playing ? "hsl(96,63%,64%)" : "hsl(270,20%,50%)" }}
+      >
+        {playing ? "⏸" : "▶️"}
+      </button>
+    </div>
+  );
+}
+
+// Animated home scene illustration
+function HomeIllustration() {
+  return (
+    <div className="w-full relative" style={{ maxWidth: 380 }}>
+      {/* Floating glow behind image */}
+      <div
+        className="absolute inset-0 rounded-2xl pointer-events-none"
+        style={{
+          background: "radial-gradient(ellipse at center, hsl(280,60%,30%,0.5) 0%, transparent 70%)",
+          filter: "blur(20px)",
+          transform: "translateY(8px)",
+          zIndex: 0,
+        }}
+      />
+      <img
+        src="/home-scene.png"
+        alt="Cozy cartoon couch scene with quirky characters"
+        className="w-full rounded-2xl relative"
+        style={{
+          boxShadow: "0 0 32px hsl(280,60%,20%,0.8), 0 0 64px hsl(96,63%,20%,0.3)",
+          zIndex: 1,
+          // Gentle floating animation
+          animation: "floatScene 6s ease-in-out infinite",
+        }}
+        draggable={false}
+      />
+    </div>
+  );
+}
+
 export default function HomeScreen() {
   const [, navigate] = useLocation();
   const { session } = useSession();
   const [hasSession, setHasSession] = useState(false);
+  const { playing, muted, toggle, toggleMute } = useAmbientAudio();
 
   useEffect(() => {
     if (session && !session.endedAt) {
@@ -102,31 +210,25 @@ export default function HomeScreen() {
     }
   }, [session]);
 
-  function handleStart() {
-    navigate("/safety");
-  }
-
-  function handleContinue() {
-    navigate("/game");
-  }
-
   return (
     <div className="min-h-dvh pixel-bg flex flex-col items-center justify-center px-4 py-8 relative">
-      <SmokeParticles />
+      <FloatingDots />
 
-      <div className="w-full max-w-sm flex flex-col items-center gap-6 relative z-10">
+      {/* Audio badge — top right */}
+      <div className="fixed top-4 right-4 z-20">
+        <AudioBadge playing={playing} muted={muted} onToggle={toggle} onMute={toggleMute} />
+      </div>
+
+      <div className="w-full max-w-sm flex flex-col items-center gap-5 relative z-10">
         <CouchQuestLogo />
-        <CouchScene />
+        <HomeIllustration />
 
         {/* Main CTA */}
         <button
           data-testid="button-start-quest"
-          onClick={handleStart}
+          onClick={() => navigate("/safety")}
           className="w-full py-4 rounded-xl font-bold text-lg tracking-wide transition-all duration-200 glow-primary"
-          style={{
-            background: "hsl(96,63%,64%)",
-            color: "hsl(265,25%,8%)",
-          }}
+          style={{ background: "hsl(96,63%,64%)", color: "hsl(265,25%,8%)" }}
           onMouseEnter={(e) => (e.currentTarget.style.background = "hsl(96,63%,72%)")}
           onMouseLeave={(e) => (e.currentTarget.style.background = "hsl(96,63%,64%)")}
         >
@@ -136,7 +238,7 @@ export default function HomeScreen() {
         {hasSession && (
           <button
             data-testid="button-continue-session"
-            onClick={handleContinue}
+            onClick={() => navigate("/game")}
             className="w-full py-3 rounded-xl font-semibold text-base transition-all duration-200"
             style={{
               background: "hsl(265,28%,20%)",

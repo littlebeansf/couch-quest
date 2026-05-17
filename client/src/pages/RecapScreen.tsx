@@ -1,3 +1,4 @@
+import { AvatarImg } from "@/components/AvatarImg";
 import { useLocation } from "wouter";
 import { useSession } from "@/state/sessionStore";
 import { getCharacter } from "@/data/characters";
@@ -79,7 +80,7 @@ export default function RecapScreen() {
               ⭐ MVP — Most Vibe Tokens
             </p>
             <div className="flex items-center gap-3">
-              <span className="text-3xl">{mvp.avatarEmoji}</span>
+              <AvatarImg value={mvp.avatarEmoji} size={48} />
               <div>
                 <p className="font-bold" style={{ color: "hsl(270,40%,96%)" }}>
                   {mvp.name || "The Mysterious One"}
@@ -107,7 +108,7 @@ export default function RecapScreen() {
               🔍 Most Suspicious Energy
             </p>
             <div className="flex items-center gap-3">
-              <span className="text-2xl">{suspicious.avatarEmoji}</span>
+              <AvatarImg value={suspicious.avatarEmoji} size={40} />
               <div>
                 <p className="font-semibold text-sm" style={{ color: "hsl(270,40%,96%)" }}>
                   {suspicious.name || "Someone"}
@@ -144,7 +145,7 @@ export default function RecapScreen() {
                 <span className="text-sm w-5 text-center" style={{ color: "hsl(270,20%,50%)" }}>
                   {i === 0 ? "🥇" : i === 1 ? "🥈" : i === 2 ? "🥉" : `${i + 1}.`}
                 </span>
-                <span className="text-lg">{p.avatarEmoji}</span>
+                <AvatarImg value={p.avatarEmoji} size={30} />
                 <div className="flex-1">
                   <p className="text-sm font-semibold" style={{ color: "hsl(270,40%,96%)" }}>
                     {p.name || `Player ${i + 1}`}

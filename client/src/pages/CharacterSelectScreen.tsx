@@ -2,6 +2,7 @@ import { useState } from "react";
 import { useLocation } from "wouter";
 import { useSession } from "@/state/sessionStore";
 import { characters } from "@/data/characters";
+import { AvatarImg } from "@/components/AvatarImg";
 import { CharacterId } from "@/types/game";
 
 export default function CharacterSelectScreen() {
@@ -51,7 +52,7 @@ export default function CharacterSelectScreen() {
         </button>
 
         <div className="flex items-center gap-2 mb-1">
-          <span className="text-2xl">{currentPlayer?.avatarEmoji ?? "🦊"}</span>
+          <AvatarImg value={currentPlayer?.avatarEmoji ?? "snack-goblin"} size={36} />
           <h1 className="text-xl font-black" style={{ color: "hsl(270,40%,96%)" }}>
             {currentPlayer?.name || `Player ${currentPlayerIdx + 1}`}'s Character
           </h1>

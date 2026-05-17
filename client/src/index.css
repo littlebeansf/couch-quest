@@ -160,3 +160,15 @@
 
 /* Safe area for mobile */
 .safe-bottom { padding-bottom: env(safe-area-inset-bottom, 16px); }
+
+/* Home illustration float */
+@keyframes floatScene {
+  0%, 100% { transform: translateY(0px); }
+  50% { transform: translateY(-6px); }
+}
+
+/* Audio visualizer bars */
+@keyframes audioBar {
+  0%   { height: 4px; }
+  100% { height: 14px; }
+}

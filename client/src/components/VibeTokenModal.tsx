@@ -1,3 +1,4 @@
+import { AvatarImg } from "@/components/AvatarImg";
 import { useState } from "react";
 import { useSession } from "@/state/sessionStore";
 import { getCharacter } from "@/data/characters";
@@ -60,7 +61,7 @@ export default function VibeTokenModal({ onClose }: Props) {
                     border: `2px solid ${wasGiven ? "hsl(38,100%,64%)" : "hsl(265,22%,28%)"}`,
                   }}
                 >
-                  <span className="text-2xl">{p.avatarEmoji}</span>
+                  <AvatarImg value={p.avatarEmoji} size={36} />
                   <div className="flex-1 text-left">
                     <p className="font-semibold text-sm" style={{ color: "hsl(270,40%,96%)" }}>
                       {p.name || `Player`}
