@@ -2,21 +2,22 @@ import { useState } from "react";
 import { useLocation } from "wouter";
 import { useSession } from "@/state/sessionStore";
 import { Player } from "@/types/game";
+import { assetUrl } from "@/lib/assetUrl";
 
 // 12 cartoon character avatars — each has an id, image path, and display name
 export const AVATAR_CHARACTERS = [
-  { id: "snack-goblin",       src: "/avatars/avatar-snack-goblin.png",       name: "Snack Goblin" },
-  { id: "couch-shaman",       src: "/avatars/avatar-couch-shaman.png",       name: "Couch Shaman" },
-  { id: "rolling-apprentice", src: "/avatars/avatar-rolling-apprentice.png", name: "Rolling Apprentice" },
-  { id: "space-cadet",        src: "/avatars/avatar-space-cadet.png",        name: "Space Cadet" },
-  { id: "weed-sommelier",     src: "/avatars/avatar-weed-sommelier.png",     name: "Weed Sommelier" },
-  { id: "lighter-thief",      src: "/avatars/avatar-lighter-thief.png",      name: "Lighter Thief" },
-  { id: "dj-gremlin",         src: "/avatars/avatar-dj-gremlin.png",         name: "DJ Gremlin" },
-  { id: "conspiracy-uncle",   src: "/avatars/avatar-conspiracy-uncle.png",   name: "Conspiracy Uncle" },
-  { id: "nature-wizard",      src: "/avatars/avatar-nature-wizard.png",      name: "Nature Wizard" },
-  { id: "vibe-oracle",        src: "/avatars/avatar-vibe-oracle.png",        name: "Vibe Oracle" },
-  { id: "munchie-knight",     src: "/avatars/avatar-munchie-knight.png",     name: "Munchie Knight" },
-  { id: "chill-sloth",        src: "/avatars/avatar-chill-sloth.png",        name: "Chill Sloth" },
+  { id: "snack-goblin",       src: assetUrl("/avatars/avatar-snack-goblin.png"),       name: "Snack Goblin" },
+  { id: "couch-shaman",       src: assetUrl("/avatars/avatar-couch-shaman.png"),       name: "Couch Shaman" },
+  { id: "rolling-apprentice", src: assetUrl("/avatars/avatar-rolling-apprentice.png"), name: "Rolling Apprentice" },
+  { id: "space-cadet",        src: assetUrl("/avatars/avatar-space-cadet.png"),        name: "Space Cadet" },
+  { id: "weed-sommelier",     src: assetUrl("/avatars/avatar-weed-sommelier.png"),     name: "Weed Sommelier" },
+  { id: "lighter-thief",      src: assetUrl("/avatars/avatar-lighter-thief.png"),      name: "Lighter Thief" },
+  { id: "dj-gremlin",         src: assetUrl("/avatars/avatar-dj-gremlin.png"),         name: "DJ Gremlin" },
+  { id: "conspiracy-uncle",   src: assetUrl("/avatars/avatar-conspiracy-uncle.png"),   name: "Conspiracy Uncle" },
+  { id: "nature-wizard",      src: assetUrl("/avatars/avatar-nature-wizard.png"),      name: "Nature Wizard" },
+  { id: "vibe-oracle",        src: assetUrl("/avatars/avatar-vibe-oracle.png"),        name: "Vibe Oracle" },
+  { id: "munchie-knight",     src: assetUrl("/avatars/avatar-munchie-knight.png"),     name: "Munchie Knight" },
+  { id: "chill-sloth",        src: assetUrl("/avatars/avatar-chill-sloth.png"),        name: "Chill Sloth" },
 ];
 
 const RELATIONSHIP_TAGS = ["Friends", "Couple", "Roommates", "Best Friends", "Strangers", "Siblings", "Coworkers"];

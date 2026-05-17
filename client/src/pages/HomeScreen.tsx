@@ -1,6 +1,7 @@
 import { useLocation } from "wouter";
 import { useSession } from "@/state/sessionStore";
 import { useEffect, useRef, useState } from "react";
+import { assetUrl } from "@/lib/assetUrl";
 
 // Audio controller hook – auto-plays on mount (if allowed), survives re-renders
 function useAmbientAudio() {
@@ -9,7 +10,7 @@ function useAmbientAudio() {
   const [muted, setMuted] = useState(false);
 
   useEffect(() => {
-    const audio = new Audio("/audio/reggae-chill.mp3");
+    const audio = new Audio(assetUrl("/audio/reggae-chill.mp3"));
     audio.loop = true;
     audio.volume = 0.35;
     audioRef.current = audio;
@@ -183,7 +184,7 @@ function HomeIllustration() {
         }}
       />
       <img
-        src="/home-scene.png"
+        src={assetUrl("/home-scene.png")}
         alt="Cozy cartoon couch scene with quirky characters"
         className="w-full rounded-2xl relative"
         style={{
